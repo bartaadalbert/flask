@@ -1,4 +1,4 @@
-#!/Users/adalbertbarta/Documents/flaskApp/venv/bin/python3
+#!/home/adalbert/git/flaskApp/flask/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

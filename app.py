@@ -63,4 +63,4 @@ def register():
     return render_template('register.html', form=form)
 
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0', port=81)
+    app.run(debug=True, host='0.0.0.0', port=81)
