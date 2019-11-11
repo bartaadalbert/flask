@@ -1,6 +1,6 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
 from data import Articles
-from flask_mysqldb import MySQL
+#from flask_mysqldb import MySQL
 #import mysql.connector
 from wtforms import  Form, StringField, TextAreaField, validators, PasswordField
 from passlib.hash import sha256_crypt
