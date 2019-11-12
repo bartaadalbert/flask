@@ -9,14 +9,8 @@
 <body>
 {% include 'includes/_navbar.html' %}
     <div class="container">
-
-      {% block body %}
-hello<br>
-hellohello<br>
-hellohello<br>
-
-hello<br>
-      {% endblock %}
+      {% include 'includes/_messages.html' %}
+      {% block body %}  {% endblock %}
     </div>
 
     <script src="https://code.jquery.com/jquery.js"></script>
