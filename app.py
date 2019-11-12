@@ -64,7 +64,7 @@ def register():
             #cur.execute("INSERT INTO users (name, email, username, password) VALUES (%s, %s, %s, %s)", (name, email, username, password))
             val = cur.execute("SELECT * FROM users WHERE username = (%s)",[thwart(username)])
             if int(val) >0:
-                flash("That username is already taken, please choose another",'error')
+                flash("That Username is already taken, please choose another",'danger')
                 return render_template('register.html', form=form)
 
             else:
@@ -76,10 +76,46 @@ def register():
             cur.close()
             gc.collect()
 
+            session['logged_in'] = True
+            session['username'] = username
+
             return redirect(url_for('index'))
         return render_template('register.html', form=form)
     except Exception as e:
         return(str(e))
+
+
+@app.route('/login', methods=["GET","POST"])
+def login_page():
+    error = ''
+    try:
+        cur=mysql.connection.cursor()
+        if request.method == "POST":
+
+            data = cur.execute("SELECT * FROM users WHERE username = (%s)",
+                             thwart(request.form['username']))
+
+            data = cur.fetchone()[2]
+
+            if sha256_crypt.verify(request.form['password'], data):
+                session['logged_in'] = True
+                session['username'] = request.form['username']
+
+                flash("You are now logged in",'success')
+                return redirect(url_for("index"))
+
+            else:
+                error = "Invalid credentials, try again."
+
+        gc.collect()
+
+        return render_template("login.html", error=error)
+
+    except Exception as e:
+        #flash(e)
+        error = "Invalid credentials, try again."
+        return render_template("login.html", error = error)
+
 
 if __name__ == '__main__':
     app.secret_key='mysecretpage'
