@@ -106,6 +106,7 @@ def login_page():
 
             else:
                 error = "Invalid credentials, try again."
+                flash("You are not logged",'warning')
 
         gc.collect()
 
