@@ -76,10 +76,9 @@ def register():
             cur.close()
             gc.collect()
 
-            session['logged_in'] = True
-            session['username'] = username
 
-            return redirect(url_for('index'))
+
+            return redirect(url_for('login'))
         return render_template('register.html', form=form)
     except Exception as e:
         return(str(e))
@@ -89,33 +88,43 @@ def register():
 def login_page():
     error = ''
     try:
-        cur=mysql.connection.cursor()
+
         if request.method == "POST":
+            #username= request.form['username']
+            #password_candidate= request.form['password ']
+            cur=mysql.connection.cursor()
 
             data = cur.execute("SELECT * FROM users WHERE username = (%s)",
-                             thwart(request.form['username']))
+                             [thwart(request.form['username'])])
 
-            data = cur.fetchone()[2]
+            data = cur.fetchone()
+            password=data['password']
 
-            if sha256_crypt.verify(request.form['password'], data):
-                session['logged_in'] = True
-                session['username'] = request.form['username']
+            if sha256_crypt.verify(request.form['password'], [password]):
+                #session['logged_in'] = True
+                #session['username'] = request.form['username']
 
                 flash("You are now logged in",'success')
-                return redirect(url_for("index"))
+                #return render_template("login.html")
 
             else:
-                error = "Invalid credentials, try again."
+                #error = "Invalid credentials, try again."
                 flash("You are not logged",'warning')
+                return render_template("login.html", error=error)
 
         gc.collect()
 
         return render_template("login.html", error=error)
 
     except Exception as e:
-        #flash(e)
+        flash(e)
         error = "Invalid credentials, try again."
         return render_template("login.html", error = error)
+
+@app.route('/logout')
+def logout():
+	session.pop('email', None)
+	return redirect('/')
 
 
 if __name__ == '__main__':
