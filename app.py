@@ -4,6 +4,7 @@ from data import Articles
 from flask_mysqldb import MySQL
 #import mysql.connector
 from wtforms import  Form, StringField, TextAreaField, validators, PasswordField, BooleanField
+from wtforms.validators import Length, Email, DataRequired, EqualTo
 from passlib.hash import sha256_crypt
 from MySQLdb import escape_string as thwart
 import gc
@@ -39,15 +40,14 @@ def article(id):
     return render_template('article.html', id=id)
 
 class RegisterForm(Form):
-    name = StringField('Name', [validators.Length(min=1, max=50)])
-    username = StringField('Username', [validators.Length(min=4, max=25)])
-    email= StringField('Email', [validators.Length(min=6, max=50)])
-    password= PasswordField('Password', [
-    validators.DataRequired(),
-    validators.EqualTo('confirm', message='Passwords must match')
+    name = StringField('Name', validators=[DataRequired(),Length(min=3,max=50)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=4,max=25)])
+    email= StringField('Email', validators=[DataRequired(), Email()])
+    password= PasswordField('Password', validators=[ DataRequired(),
+    EqualTo('confirm', message='Passwords must match')
     ])
     confirm= PasswordField('Repeat Password')
-    accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice (updated November 11, 2019)', [validators.Required()])
+    accept_tos = BooleanField('I accept the Terms of Service and Privacy Notice (updated November 11, 2019)', validators=[DataRequired()])
 
 
 
@@ -117,7 +117,7 @@ def login_page():
         return render_template("login.html", error=error)
 
     except Exception as e:
-        flash(e)
+        #flash(e)
         error = "Invalid credentials, try again."
         return render_template("login.html", error = error)
 
